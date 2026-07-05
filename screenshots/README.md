@@ -2,8 +2,6 @@
 
 This directory contains visual walk-through assets of the **FinRelief AI** user interface.
 
-## Recommended Screenshots
-Place screenshots here to demonstrate the working system in your portfolio:
 1. `01_login_page.png` - Showing the secure JWT auth landing page.
 2. `02_dashboard_overview.png` - Showing the financial health calculators and stress levels.
 3. `03_loan_crud.png` - Showing the loan portfolio management list.
