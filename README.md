@@ -1,25 +1,27 @@
 # FinRelief AI – AI Powered Debt Relief & Financial Recovery Platform
 
-FinRelief AI is a state-of-the-art, modular full-stack application designed to analyze personal debt structures and formulate automated financial recovery strategies. Leveraging cognitive modeling and interactive tools, it helps users optimize repayment vectors, track monthly budgets, and draft automated creditor negotiation correspondence.
+FinRelief AI is a full-stack application that analyzes personal debt structures and formulates AI-powered financial recovery strategies. It helps users optimize repayment plans, predict settlement outcomes, and draft professional creditor negotiation letters.
+
+---
+
+## 🔒 Security Notice
+
+> **This repository is safe to make public.** No API keys, passwords, or secrets are committed to version control. All sensitive values are loaded from a `.env` file which is listed in `.gitignore`.
+
+Anyone cloning this repository must create their own `.env` file with their own credentials before AI features will work.
 
 ---
 
 ## 🛠 Tech Stack
 
-### Backend
-- **Python 3.11** - Core backend platform
-- **FastAPI** - High performance, asynchronous web framework
-- **SQLAlchemy** - SQL database ORM mapper
-- **SQLite** - Compact relational database storage
-- **JWT Authentication** - Secure OAuth2 token-based authentication flow
-- **Uvicorn** - Lightning-fast ASGI web server implementation
-
-### Frontend
-- **React.js & Vite** - Rapid, module-level frontend development
-- **Axios** - Interceptor-driven HTTP backend connectivity
-- **React Router** - Single Page Application routing structure
-- **Lucide React** - High-quality premium SVG iconography
-- **Pure CSS Variable Tokens** - Ultra-modern, HSL dynamic gradients, glassmorphism layouts, and transitions
+| Layer | Technology |
+|---|---|
+| Backend | Python 3.11, FastAPI, Uvicorn |
+| Database | SQLite, SQLAlchemy ORM |
+| Auth | JWT (python-jose), bcrypt (passlib) |
+| AI | Google Gemini API (with rule-based fallback) |
+| Frontend | React.js, Vite, Axios, React Router |
+| Icons | Lucide React |
 
 ---
 
@@ -29,110 +31,172 @@ FinRelief AI is a state-of-the-art, modular full-stack application designed to a
 FinRelief-AI/
 ├── backend/
 │   ├── app/
-│   │   ├── auth/          # Authentication helper modules (security, verification)
-│   │   ├── core/          # App-wide configurations (logging initialization)
-│   │   ├── models/        # SQLAlchemy Database models
-│   │   ├── routers/       # FastAPI route controllers (auth endpoints)
-│   │   ├── schemas/       # Pydantic schemas (request validation / response models)
-│   │   ├── services/      # Business logic handlers (user database helper services)
-│   │   ├── utils/         # Global utilities (error response builders)
-│   │   ├── config.py      # Environment variable validator setting class
-│   │   ├── database.py    # Database engine and SessionLocal setup
-│   │   └── main.py        # ASGI application initiation & CORS setup
-│   ├── .env.example       # Database, secret key, algorithm template config
-│   ├── requirements.txt   # Backend python pip package versions list
-│   └── .gitignore         # Backend dependency ignore rules
+│   │   ├── auth/              # JWT security helpers & get_current_user dependency
+│   │   ├── core/              # Logging configuration
+│   │   ├── models/            # SQLAlchemy models (User, Loan, FinancialProfile, SettlementRecord, AIHistory)
+│   │   ├── routers/           # API route controllers (auth, loans, financial, settlement, ai, history)
+│   │   ├── schemas/           # Pydantic request/response schemas
+│   │   ├── services/          # Business logic (financial_engine, settlement_engine, gemini_service, fallback_engine, ai_orchestrator)
+│   │   ├── utils/             # Utility functions
+│   │   ├── config.py          # Environment settings loader
+│   │   ├── database.py        # SQLAlchemy engine & session setup
+│   │   └── main.py            # FastAPI application entry point
+│   ├── .env.example           # Template for environment variables
+│   └── requirements.txt       # Python dependencies
 ├── frontend/
 │   ├── src/
-│   │   ├── assets/        # Media resources
-│   │   ├── components/    # Reusable layouts (translucent Navbar, Sidebar)
-│   │   ├── context/       # Auth state providers and routing guards
-│   │   ├── hooks/         # Shared hook definitions
-│   │   ├── layouts/       # Main container layout (grid-alignment wrapper)
-│   │   ├── pages/         # Page components (Home, Login, Register, Dashboard)
-│   │   ├── services/      # Service wrappers (Axios API connection)
-│   │   ├── styles/        # CSS variables and animations
-│   │   ├── App.jsx        # Routing mapper
-│   │   └── main.jsx       # DOM mount handler
-│   ├── index.html         # HTML root and Google Font assets inclusion
-│   ├── package.json       # Node package manager configurations
-│   ├── vite.config.js     # Build options & backend proxy maps
-│   └── .gitignore         # Node modules and build output exclusions
-├── .gitignore             # Root repository-wide git exclusion rules
-└── README.md              # Project manual documentation
+│   │   ├── components/        # Navbar, Sidebar
+│   │   ├── context/           # AuthContext provider
+│   │   ├── layouts/           # MainLayout
+│   │   ├── pages/             # Home, Login, Register, Dashboard
+│   │   ├── services/          # Axios API client
+│   │   └── styles/            # CSS design system
+│   ├── index.html
+│   ├── package.json
+│   └── vite.config.js
+├── .gitignore
+└── README.md
 ```
+
+---
+
+## 🔌 API Endpoints
+
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/auth/register` | Register new user |
+| POST | `/api/v1/auth/login` | Login (form-data) |
+| POST | `/api/v1/auth/login/json` | Login (JSON body) |
+| GET | `/api/v1/auth/me` | Get current user profile |
+
+### Loans
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/loans` | List all user loans |
+| GET | `/api/v1/loans/{id}` | Get loan by ID |
+| POST | `/api/v1/loans` | Create a new loan |
+| PUT | `/api/v1/loans/{id}` | Update a loan |
+| DELETE | `/api/v1/loans/{id}` | Delete a loan |
+
+### Financial Engine
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/financial/health` | Get computed financial health |
+| POST | `/api/v1/financial/calculate` | Calculate financial health from inputs |
+
+### Settlement Prediction
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/settlement/predict` | Predict settlement for a loan |
+| GET | `/api/v1/settlement/history` | Get settlement prediction history |
+
+### AI Engine
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/v1/ai/generate-strategy` | Generate negotiation strategy |
+| POST | `/api/v1/ai/generate-letter` | Generate settlement letter |
+| POST | `/api/v1/ai/chat` | Chat with AI counselor |
+
+### History
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/history/ai` | Get AI interaction history |
+
+### Health
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Global health check |
+| GET | `/api/v1/health` | API v1 health check |
 
 ---
 
 ## ⚙️ Installation & Setup
 
-### 1. Prerequisites
-- **Python 3.11+** installed
-- **Node.js 18+ & npm** installed
+### Prerequisites
+- **Python 3.11+**
+- **Node.js 18+** and npm
 
 ---
 
 ### 🔑 Backend Setup
 
-1. **Navigate to backend directory**:
+1. **Navigate to backend**:
    ```bash
    cd backend
    ```
 
-2. **Create a virtual environment**:
-   - Windows:
-     ```bash
-     python -m venv venv
-     .\venv\Scripts\activate
-     ```
-   - macOS/Linux:
-     ```bash
-     python3 -m venv venv
-     source venv/bin/activate
-     ```
+2. **Create virtual environment**:
+   ```bash
+   python -m venv venv
+   # Windows
+   .\venv\Scripts\activate
+   # macOS/Linux
+   source venv/bin/activate
+   ```
 
-3. **Install python packages**:
+3. **Install dependencies**:
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Initialize configurations**:
-   Copy `.env.example` into a new `.env` file:
+4. **Create your `.env` file**:
    ```bash
    cp .env.example .env
    ```
 
-5. **Start server**:
+5. **Configure environment variables** — edit `.env`:
+   ```env
+   # Generate a secure key: openssl rand -hex 32
+   SECRET_KEY=your_generated_secret_key_here
+
+   # Optional: Get from https://aistudio.google.com/app/apikey
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+
+6. **Start the server**:
    ```bash
    uvicorn app.main:app --reload
    ```
-   The backend API will boot on `http://127.0.0.1:8000`. Open `http://127.0.0.1:8000/docs` to access Swagger interactive OpenAPI specs.
+   - API: http://127.0.0.1:8000
+   - Swagger docs: http://127.0.0.1:8000/docs
+
+---
+
+### 🤖 Obtaining a Gemini API Key
+
+1. Visit [Google AI Studio](https://aistudio.google.com/app/apikey).
+2. Sign in with your Google account.
+3. Click **"Create API Key"** and select a Google Cloud project (or create one).
+4. Copy the generated key.
+5. Paste it into your `.env` file as `GEMINI_API_KEY=your_key_here`.
+
+> **If no Gemini API key is provided**, the application will **not crash**. It automatically uses the built-in rule-based fallback engine, which provides deterministic financial advice, settlement predictions, and negotiation letter templates. The response will include `"is_fallback": true` to indicate the fallback engine was used.
 
 ---
 
 ### 💻 Frontend Setup
 
-1. **Navigate to frontend directory**:
+1. **Navigate to frontend**:
    ```bash
-   cd ../frontend
+   cd frontend
    ```
 
-2. **Install Node packages**:
+2. **Install packages**:
    ```bash
    npm install
    ```
 
-3. **Start local Vite server**:
+3. **Start dev server**:
    ```bash
    npm run dev
    ```
-   The frontend interface will initialize on `http://localhost:3000`. Requests targeting `/api` will be proxied automatically to the backend on port `8000`.
+   Frontend runs on http://localhost:3000 with API requests proxied to port 8000.
 
 ---
 
 ## 🔮 Future Modules
 
-FinRelief AI is prepared for modular enhancement in upcoming milestones:
-- **Epic 2: AI Debt Analysis Engine** - Debt-to-income (DTI) calculations, Snowball vs. Avalanche simulation engines, and automated budget allocation calculators.
-- **Epic 3: AI Legal Letter Drafter** - Settlement proposal documents, creditor dispute templates, and automated letter rendering using Gemini Pro API integrations.
-- **Epic 4: Creditor & Collection Logs** - Chronological logging, calendar event notifications for payment agreements, and dispute letter dispatch tracking.
+- **Epic 3**: AI Legal Letter Drafter — Advanced templates, multi-format export
+- **Epic 4**: Creditor & Collection Logs — Payment tracking, dispute history, calendar notifications
+- **Epic 5**: Credit Score Recovery — Score simulation, improvement roadmaps
