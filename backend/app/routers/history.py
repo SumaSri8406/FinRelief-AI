@@ -5,14 +5,14 @@ from app.database import get_db
 from app.auth.dependencies import get_current_user
 from app.models.user import User
 from app.models.ai_history import AIHistory
-from app.schemas.ai import AIHistoryListOut
+from app.schemas import HistoryResponse, ApiResponse
 
 router = APIRouter(prefix="/history", tags=["History"])
 
 
 @router.get(
     "/ai",
-    response_model=AIHistoryListOut,
+    response_model=ApiResponse[HistoryResponse],
     summary="Get AI interaction history",
     description=(
         "Retrieve the authenticated user's AI interaction history, ordered by most recent first. "
@@ -32,4 +32,10 @@ def get_ai_history(
     )
     total = query.count()
     records = query.offset(skip).limit(limit).all()
-    return AIHistoryListOut(records=records, total=total)
+    data = HistoryResponse(records=records, total=total)
+    return ApiResponse(
+        success=True,
+        message="AI history retrieved successfully",
+        data=data
+    )
+

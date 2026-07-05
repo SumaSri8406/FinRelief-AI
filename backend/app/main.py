@@ -1,7 +1,10 @@
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
 import time
+
 
 from app.config import settings
 from app.database import engine, Base
@@ -53,6 +56,52 @@ app.add_middleware(
 )
 
 
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "success": False,
+            "message": exc.detail,
+            "error": {
+                "code": exc.status_code,
+                "details": exc.detail
+            }
+        }
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={
+            "success": False,
+            "message": "Validation Error",
+            "error": {
+                "code": 422,
+                "details": exc.errors()
+            }
+        }
+    )
+
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Unhandled error: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={
+            "success": False,
+            "message": "Internal Server Error",
+            "error": {
+                "code": 500,
+                "details": str(exc)
+            }
+        }
+    )
+
+
 @app.middleware("http")
 async def log_requests_and_handle_errors(request: Request, call_next):
     start_time = time.time()
@@ -73,8 +122,16 @@ async def log_requests_and_handle_errors(request: Request, call_next):
         )
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            content=create_error_response("Internal Server Error", str(exc)),
+            content={
+                "success": False,
+                "message": "Internal Server Error",
+                "error": {
+                    "code": 500,
+                    "details": str(exc)
+                }
+            },
         )
+
 
 
 @app.on_event("startup")

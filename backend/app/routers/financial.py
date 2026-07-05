@@ -4,19 +4,19 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.auth.dependencies import get_current_user
 from app.models.user import User
-from app.schemas.financial import (
-    FinancialCalculationRequest,
+from app.schemas import (
+    FinancialProfileCreate,
     FinancialHealthResponse,
+    ApiResponse,
 )
 from app.services.financial_engine import compute_full_financial_profile
-from app.services.loan_service import get_loans_by_user
 
 router = APIRouter(prefix="/financial", tags=["Financial Engine"])
 
 
 @router.get(
     "/health",
-    response_model=FinancialHealthResponse,
+    response_model=ApiResponse[FinancialHealthResponse],
     summary="Get financial health",
     description=(
         "Compute the authenticated user's full financial health profile based on "
@@ -28,17 +28,11 @@ def get_financial_health(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    from app.models.financial_profile import FinancialProfile
-
-    profile = (
-        db.query(FinancialProfile)
-        .filter(FinancialProfile.user_id == current_user.id)
-        .first()
-    )
+    profile = current_user.financial_profile
     monthly_income = profile.monthly_income if profile else 0.0
     monthly_expenses = profile.monthly_expenses if profile else 0.0
 
-    loans = get_loans_by_user(db, user_id=current_user.id)
+    loans = current_user.loans
     result = compute_full_financial_profile(
         db,
         user_id=current_user.id,
@@ -46,12 +40,16 @@ def get_financial_health(
         monthly_expenses=monthly_expenses,
         loans=loans,
     )
-    return result
+    return ApiResponse(
+        success=True,
+        message="Financial health calculated successfully",
+        data=result
+    )
 
 
 @router.post(
     "/calculate",
-    response_model=FinancialHealthResponse,
+    response_model=ApiResponse[FinancialHealthResponse],
     summary="Calculate financial health",
     description=(
         "Supply current income and expenses. The engine calculates EMI totals from "
@@ -60,11 +58,11 @@ def get_financial_health(
     ),
 )
 def calculate_financial_health(
-    data: FinancialCalculationRequest,
+    data: FinancialProfileCreate,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    loans = get_loans_by_user(db, user_id=current_user.id)
+    loans = current_user.loans
     result = compute_full_financial_profile(
         db,
         user_id=current_user.id,
@@ -72,4 +70,9 @@ def calculate_financial_health(
         monthly_expenses=data.monthly_expenses,
         loans=loans,
     )
-    return result
+    return ApiResponse(
+        success=True,
+        message="Financial health calculated successfully",
+        data=result
+    )
+

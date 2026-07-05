@@ -1,10 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from pydantic import BaseModel, EmailStr
 
 from app.database import get_db
-from app.schemas.user import UserCreate, UserOut, Token
+from app.schemas import UserCreate, UserOut, Token, UserLogin, ApiResponse
 from app.services.user_service import (
     get_user_by_email,
     create_user,
@@ -17,14 +16,9 @@ from app.models.user import User
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
-class LoginSchema(BaseModel):
-    email: EmailStr
-    password: str
-
-
 @router.post(
     "/register",
-    response_model=UserOut,
+    response_model=ApiResponse[UserOut],
     status_code=status.HTTP_201_CREATED,
     summary="Register a new user",
     description="Create a new user account with email, password, and optional full name.",
@@ -36,12 +30,17 @@ def register_user(user_in: UserCreate, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="A user with this email already exists.",
         )
-    return create_user(db, user_in=user_in)
+    user = create_user(db, user_in=user_in)
+    return ApiResponse(
+        success=True,
+        message="User registered successfully",
+        data=user
+    )
 
 
 @router.post(
     "/login",
-    response_model=Token,
+    response_model=ApiResponse[Token],
     summary="Login (form-data)",
     description="Authenticate with email and password using OAuth2 form encoding.",
 )
@@ -55,19 +54,24 @@ def login(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Incorrect email or password",
         )
-    return {
-        "access_token": create_access_token(subject=user.id),
-        "token_type": "bearer",
-    }
+    token_data = Token(
+        access_token=create_access_token(subject=user.id),
+        token_type="bearer"
+    )
+    return ApiResponse(
+        success=True,
+        message="Login successful",
+        data=token_data
+    )
 
 
 @router.post(
     "/login/json",
-    response_model=Token,
+    response_model=ApiResponse[Token],
     summary="Login (JSON)",
     description="Authenticate with email and password via JSON body. Convenient for frontend Axios clients.",
 )
-def login_json(credentials: LoginSchema, db: Session = Depends(get_db)):
+def login_json(credentials: UserLogin, db: Session = Depends(get_db)):
     user = authenticate_user(
         db, email=credentials.email, password=credentials.password
     )
@@ -76,17 +80,27 @@ def login_json(credentials: LoginSchema, db: Session = Depends(get_db)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Incorrect email or password",
         )
-    return {
-        "access_token": create_access_token(subject=user.id),
-        "token_type": "bearer",
-    }
+    token_data = Token(
+        access_token=create_access_token(subject=user.id),
+        token_type="bearer"
+    )
+    return ApiResponse(
+        success=True,
+        message="Login successful",
+        data=token_data
+    )
 
 
 @router.get(
     "/me",
-    response_model=UserOut,
+    response_model=ApiResponse[UserOut],
     summary="Get current user",
     description="Return the profile of the currently authenticated user.",
 )
 def read_users_me(current_user: User = Depends(get_current_user)):
-    return current_user
+    return ApiResponse(
+        success=True,
+        message="User profile retrieved successfully",
+        data=current_user
+    )
+
