@@ -126,21 +126,31 @@ def predict_settlement(
         f"negotiating a lump-sum settlement is advisable to prevent further credit score damage."
     )
 
-    # Persist to database
-    record = SettlementRecord(
-        user_id=user_id,
-        loan_id=loan.id,
-        outstanding_amount=loan.outstanding_amount,
-        recommended_percentage=settlement_pct,
-        recommended_amount=recommended_amount,
-        priority=priority,
-        risk_category=risk_category,
-        ai_generated=False,
-        strategy_text=strategy_text,
-    )
-    db.add(record)
-    db.commit()
-    db.refresh(record)
+    # Persist to database (Reuse existing record for the loan if available to avoid bloat)
+    record = db.query(SettlementRecord).filter(SettlementRecord.loan_id == loan.id).first()
+    if not record:
+        record = SettlementRecord(user_id=user_id, loan_id=loan.id)
+        db.add(record)
+
+    record.outstanding_amount = loan.outstanding_amount
+    record.recommended_percentage = settlement_pct
+    record.recommended_amount = recommended_amount
+    record.priority = priority
+    record.risk_category = risk_category
+    record.ai_generated = False
+    record.strategy_text = strategy_text
+
+    try:
+        db.commit()
+        db.refresh(record)
+    except Exception:
+        db.rollback()
+        raise
+
+    # Fetch financial health (stress level) to include in response
+    from app.models.financial_profile import FinancialProfile
+    profile = db.query(FinancialProfile).filter(FinancialProfile.user_id == user_id).first()
+    financial_health = profile.stress_level if profile else "Low"
 
     return {
         "loan_id": loan.id,
@@ -153,13 +163,21 @@ def predict_settlement(
         "risk_category": risk_category,
         "strategy_text": strategy_text,
         "ai_generated": False,
+        "financial_health": financial_health,
     }
 
 
-def get_settlement_history(db: Session, user_id: int) -> list[SettlementRecord]:
+def get_settlement_history(db: Session, user_id: int, skip: int = 0, limit: int = 50) -> list[SettlementRecord]:
     return (
         db.query(SettlementRecord)
         .filter(SettlementRecord.user_id == user_id)
         .order_by(SettlementRecord.created_at.desc())
+        .offset(skip)
+        .limit(limit)
         .all()
     )
+
+
+def get_settlement_history_count(db: Session, user_id: int) -> int:
+    return db.query(SettlementRecord).filter(SettlementRecord.user_id == user_id).count()
+
