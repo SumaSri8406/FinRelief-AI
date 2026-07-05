@@ -7,4 +7,4 @@ This directory contains visual walk-through assets of the **FinRelief AI** user 
 3. `03_loan_crud.png` - Showing the loan portfolio management list.
 4. `04_settlement_predictions.png` - Showing the prediction engine output.
 5. `05_ai_negotiation_letter.png` - Showing generated hardship letters.
-6. `06_ai_counselor_chat.png` - Showing chat history log interface.
+
