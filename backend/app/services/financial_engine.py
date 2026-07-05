@@ -114,8 +114,12 @@ def compute_full_financial_profile(
     profile.financial_health_score = health_score
     profile.stress_level = stress_level
 
-    db.commit()
-    db.refresh(profile)
+    try:
+        db.commit()
+        db.refresh(profile)
+    except Exception:
+        db.rollback()
+        raise
 
     return {
         "monthly_income": monthly_income,
@@ -128,3 +132,4 @@ def compute_full_financial_profile(
         "financial_health_score": health_score,
         "stress_level": stress_level,
     }
+
