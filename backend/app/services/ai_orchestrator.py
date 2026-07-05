@@ -150,4 +150,9 @@ def _save_history(
         is_fallback=is_fallback,
     )
     db.add(record)
-    db.commit()
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise
+

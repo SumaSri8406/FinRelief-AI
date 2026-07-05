@@ -17,9 +17,14 @@ def create_user(db: Session, user_in: UserCreate) -> User:
         is_active=user_in.is_active,
     )
     db.add(db_obj)
-    db.commit()
-    db.refresh(db_obj)
+    try:
+        db.commit()
+        db.refresh(db_obj)
+    except Exception:
+        db.rollback()
+        raise
     return db_obj
+
 
 def authenticate_user(db: Session, email: str, password: str) -> User | None:
     user = get_user_by_email(db, email)
