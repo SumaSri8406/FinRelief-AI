@@ -18,6 +18,7 @@ from app.routers import (
 )
 from app.core import logger
 from app.utils import create_error_response
+from app.services.gemini_service import gemini_service
 
 # Initialize database tables on import.
 # In production, use Alembic migrations instead.
@@ -146,7 +147,6 @@ def startup_event():
     )
     logger.info(f"Database: {db_display}")
 
-    from app.services.gemini_service import gemini_service
     if gemini_service.available:
         logger.info("Gemini AI: ENABLED")
     else:
@@ -164,7 +164,6 @@ def shutdown_event():
 # Health checks
 @app.get("/health", status_code=status.HTTP_200_OK, tags=["Health"])
 def health_check():
-    from app.services.gemini_service import gemini_service
     return {
         "status": "healthy",
         "timestamp": time.time(),

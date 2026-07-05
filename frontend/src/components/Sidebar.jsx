@@ -4,19 +4,23 @@ import {
   LayoutDashboard, 
   TrendingDown, 
   Sparkles, 
-  PieChart, 
   Settings, 
   BookOpen, 
-  LifeBuoy
+  LifeBuoy,
+  FileText,
+  History,
+  User
 } from 'lucide-react';
 
 export const Sidebar = () => {
   const menuItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Debt Analysis', path: '/dashboard/debt-analysis', icon: TrendingDown, badge: 'AI' },
-    { name: 'Recovery Plans', path: '/dashboard/recovery-plans', icon: Sparkles },
-    { name: 'Budget Tracker', path: '/dashboard/budget', icon: PieChart },
-    { name: 'Financial Library', path: '/dashboard/library', icon: BookOpen },
+    { name: 'Loan Portfolio', path: '/dashboard/loans', icon: TrendingDown },
+    { name: 'Settlement Modeling', path: '/dashboard/settlement-predictor', icon: Sparkles, badge: 'AI' },
+    { name: 'Negotiation Writer', path: '/dashboard/negotiate', icon: FileText },
+    { name: 'Know Your Rights', path: '/dashboard/rights', icon: BookOpen },
+    { name: 'AI Gen History', path: '/dashboard/ai-history', icon: History },
+    { name: 'Profile & Financials', path: '/dashboard/profile', icon: User },
     { name: 'Settings', path: '/dashboard/settings', icon: Settings },
   ];
 

@@ -88,6 +88,7 @@ def compute_full_financial_profile(
     monthly_income: float,
     monthly_expenses: float,
     loans: list[Loan],
+    profile: FinancialProfile = None,
 ) -> dict:
     total_emi = calculate_total_emi(loans)
     total_outstanding = calculate_total_outstanding(loans)
@@ -100,7 +101,8 @@ def compute_full_financial_profile(
     stress_level = calculate_financial_stress_level(health_score)
 
     # Persist / update the profile
-    profile = db.query(FinancialProfile).filter(FinancialProfile.user_id == user_id).first()
+    if profile is None:
+        profile = db.query(FinancialProfile).filter(FinancialProfile.user_id == user_id).first()
     if not profile:
         profile = FinancialProfile(user_id=user_id)
         db.add(profile)

@@ -6,6 +6,22 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
+import DebtAnalysis from './pages/DebtAnalysis';
+import RecoveryPlans from './pages/RecoveryPlans';
+import BudgetTracker from './pages/BudgetTracker';
+import FinancialLibrary from './pages/FinancialLibrary';
+import Settings from './pages/Settings';
+
+// New Pages imported for Epic 4
+import LoanManagement from './pages/LoanManagement';
+import AddLoan from './pages/AddLoan';
+import EditLoan from './pages/EditLoan';
+import SettlementPredictor from './pages/SettlementPredictor';
+import NegotiationEmailGenerator from './pages/NegotiationEmailGenerator';
+import KnowYourRights from './pages/KnowYourRights';
+import AIHistory from './pages/AIHistory';
+import Profile from './pages/Profile';
+import NotFound from './pages/NotFound';
 
 // Route guard component to check for authenticated users
 const RequireAuth = ({ children }) => {
@@ -44,6 +60,8 @@ export const App = () => {
             <Route index element={<Home />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            
+            {/* Dashboard Subroutes */}
             <Route 
               path="dashboard" 
               element={
@@ -52,8 +70,115 @@ export const App = () => {
                 </RequireAuth>
               } 
             />
+            <Route 
+              path="dashboard/loans" 
+              element={
+                <RequireAuth>
+                  <LoanManagement />
+                </RequireAuth>
+              } 
+            />
+            <Route 
+              path="dashboard/loans/add" 
+              element={
+                <RequireAuth>
+                  <AddLoan />
+                </RequireAuth>
+              } 
+            />
+            <Route 
+              path="dashboard/loans/edit/:id" 
+              element={
+                <RequireAuth>
+                  <EditLoan />
+                </RequireAuth>
+              } 
+            />
+            <Route 
+              path="dashboard/settlement-predictor" 
+              element={
+                <RequireAuth>
+                  <SettlementPredictor />
+                </RequireAuth>
+              } 
+            />
+            <Route 
+              path="dashboard/negotiate" 
+              element={
+                <RequireAuth>
+                  <NegotiationEmailGenerator />
+                </RequireAuth>
+              } 
+            />
+            <Route 
+              path="dashboard/rights" 
+              element={
+                <RequireAuth>
+                  <KnowYourRights />
+                </RequireAuth>
+              } 
+            />
+            <Route 
+              path="dashboard/ai-history" 
+              element={
+                <RequireAuth>
+                  <AIHistory />
+                </RequireAuth>
+              } 
+            />
+            <Route 
+              path="dashboard/profile" 
+              element={
+                <RequireAuth>
+                  <Profile />
+                </RequireAuth>
+              } 
+            />
+
+            {/* Existing compatibility routes */}
+            <Route 
+              path="dashboard/debt-analysis" 
+              element={
+                <RequireAuth>
+                  <DebtAnalysis />
+                </RequireAuth>
+              } 
+            />
+            <Route 
+              path="dashboard/recovery-plans" 
+              element={
+                <RequireAuth>
+                  <RecoveryPlans />
+                </RequireAuth>
+              } 
+            />
+            <Route 
+              path="dashboard/budget" 
+              element={
+                <RequireAuth>
+                  <BudgetTracker />
+                </RequireAuth>
+              } 
+            />
+            <Route 
+              path="dashboard/library" 
+              element={
+                <RequireAuth>
+                  <FinancialLibrary />
+                </RequireAuth>
+              } 
+            />
+            <Route 
+              path="dashboard/settings" 
+              element={
+                <RequireAuth>
+                  <Settings />
+                </RequireAuth>
+              } 
+            />
+
             {/* Fallback routing */}
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -88,7 +88,6 @@ def delete_loan(db: Session, loan_id: int, user_id: int) -> None:
 
 def recalculate_user_financials(db: Session, user_id: int) -> None:
     from app.models.financial_profile import FinancialProfile
-    from app.models.loan import Loan
     from app.services.financial_engine import compute_full_financial_profile
     from app.services.settlement_engine import predict_settlement
 
@@ -104,9 +103,11 @@ def recalculate_user_financials(db: Session, user_id: int) -> None:
         monthly_income=income,
         monthly_expenses=expenses,
         loans=loans,
+        profile=profile,
     )
 
     debt_ratio = profile_data.get("debt_income_ratio", 0.0)
+    stress_level = profile_data.get("stress_level", "Low")
     for l in loans:
         if l.status in ("active", "defaulted"):
             predict_settlement(
@@ -114,5 +115,6 @@ def recalculate_user_financials(db: Session, user_id: int) -> None:
                 user_id=user_id,
                 loan=l,
                 debt_income_ratio=debt_ratio,
+                stress_level=stress_level,
             )
 

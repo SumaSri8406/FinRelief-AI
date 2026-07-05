@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
           const userData = await authService.getCurrentUser();
           setUser(userData);
         } catch (err) {
-          console.error("Token verification failed", err);
+          console.error("Token verification failed:", err.message);
           authService.logout();
         }
       }
@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       return userData;
     } catch (err) {
-      const errMsg = err.response?.data?.detail || "Login failed. Please verify credentials.";
+      const errMsg = err.response?.data?.message || err.response?.data?.detail || "Login failed. Please verify credentials.";
       setError(errMsg);
       throw new Error(errMsg);
     } finally {
@@ -52,7 +52,7 @@ export const AuthProvider = ({ children }) => {
       await login(email, password);
       return res;
     } catch (err) {
-      const errMsg = err.response?.data?.detail || "Registration failed. Try again.";
+      const errMsg = err.response?.data?.message || err.response?.data?.detail || "Registration failed. Try again.";
       setError(errMsg);
       throw new Error(errMsg);
     } finally {

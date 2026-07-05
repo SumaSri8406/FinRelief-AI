@@ -39,6 +39,7 @@ def get_financial_health(
         monthly_income=monthly_income,
         monthly_expenses=monthly_expenses,
         loans=loans,
+        profile=profile,
     )
     return ApiResponse(
         success=True,
@@ -69,6 +70,7 @@ def calculate_financial_health(
         monthly_income=data.monthly_income,
         monthly_expenses=data.monthly_expenses,
         loans=loans,
+        profile=current_user.financial_profile,
     )
     return ApiResponse(
         success=True,

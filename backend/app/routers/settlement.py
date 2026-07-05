@@ -47,6 +47,7 @@ def predict_settlement(
         user_id=current_user.id,
         loan=loan,
         debt_income_ratio=debt_ratio,
+        stress_level=profile.stress_level if profile else "Low",
     )
     return ApiResponse(
         success=True,

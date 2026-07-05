@@ -91,6 +91,7 @@ def predict_settlement(
     user_id: int,
     loan: Loan,
     debt_income_ratio: float = 0.0,
+    stress_level: str = None,
 ) -> dict:
     outstanding_ratio = 0.0
     if loan.original_amount > 0:
@@ -148,9 +149,10 @@ def predict_settlement(
         raise
 
     # Fetch financial health (stress level) to include in response
-    from app.models.financial_profile import FinancialProfile
-    profile = db.query(FinancialProfile).filter(FinancialProfile.user_id == user_id).first()
-    financial_health = profile.stress_level if profile else "Low"
+    if stress_level is None:
+        from app.models.financial_profile import FinancialProfile
+        profile = db.query(FinancialProfile).filter(FinancialProfile.user_id == user_id).first()
+        stress_level = profile.stress_level if profile else "Low"
 
     return {
         "loan_id": loan.id,
@@ -163,7 +165,7 @@ def predict_settlement(
         "risk_category": risk_category,
         "strategy_text": strategy_text,
         "ai_generated": False,
-        "financial_health": financial_health,
+        "financial_health": stress_level,
     }
 
 
