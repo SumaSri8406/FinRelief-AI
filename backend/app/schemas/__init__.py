@@ -1,15 +1,19 @@
-from app.schemas.user import UserBase, UserCreate, UserUpdate, UserOut, Token, TokenPayload
-from app.schemas.loan import LoanCreate, LoanUpdate, LoanOut, LoanListOut
+from app.schemas.base import ApiResponse, ApiErrorResponse
+from app.schemas.user import UserBase, UserCreate, UserUpdate, UserOut, Token, TokenPayload, UserLogin
+from app.schemas.loan import LoanCreate, LoanUpdate, LoanOut, LoanListOut, LoanResponse
 from app.schemas.financial import (
     FinancialCalculationRequest,
     FinancialHealthResponse,
     FinancialProfileOut,
+    FinancialProfileCreate,
 )
 from app.schemas.settlement import (
     SettlementPredictionRequest,
     SettlementPredictionResponse,
     SettlementHistoryOut,
     SettlementHistoryListOut,
+    SettlementRequest,
+    SettlementResponse,
 )
 from app.schemas.ai import (
     StrategyRequest,
@@ -20,4 +24,8 @@ from app.schemas.ai import (
     ChatResponse,
     AIHistoryOut,
     AIHistoryListOut,
+    NegotiationRequest,
+    NegotiationResponse,
+    HistoryResponse,
 )
+

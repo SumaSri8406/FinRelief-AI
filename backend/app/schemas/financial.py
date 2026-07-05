@@ -34,3 +34,7 @@ class FinancialProfileOut(BaseModel):
     updated_at: Optional[datetime.datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+class FinancialProfileCreate(FinancialCalculationRequest):
+    pass
+

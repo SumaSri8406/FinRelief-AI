@@ -46,3 +46,7 @@ class LoanOut(LoanBase):
 class LoanListOut(BaseModel):
     loans: list[LoanOut]
     total: int
+
+class LoanResponse(LoanOut):
+    pass
+

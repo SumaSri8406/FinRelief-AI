@@ -2,6 +2,9 @@ from pydantic import BaseModel, ConfigDict, Field
 from typing import Optional
 import datetime
 
+# Disable protected_namespaces because we use "model_used" as a field name
+_ai_config = ConfigDict(protected_namespaces=())
+
 
 class StrategyRequest(BaseModel):
     monthly_income: float = Field(..., gt=0)
@@ -14,6 +17,8 @@ class StrategyRequest(BaseModel):
 
 
 class StrategyResponse(BaseModel):
+    model_config = _ai_config
+
     strategy: str
     is_fallback: bool = False
     model_used: str = "fallback"
@@ -30,6 +35,8 @@ class LetterRequest(BaseModel):
 
 
 class LetterResponse(BaseModel):
+    model_config = _ai_config
+
     letter: str
     is_fallback: bool = False
     model_used: str = "fallback"
@@ -43,12 +50,16 @@ class ChatRequest(BaseModel):
 
 
 class ChatResponse(BaseModel):
+    model_config = _ai_config
+
     reply: str
     is_fallback: bool = False
     model_used: str = "fallback"
 
 
 class AIHistoryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True, protected_namespaces=())
+
     id: int
     user_id: int
     request_type: str
@@ -58,9 +69,17 @@ class AIHistoryOut(BaseModel):
     is_fallback: bool
     created_at: datetime.datetime
 
-    model_config = ConfigDict(from_attributes=True)
-
 
 class AIHistoryListOut(BaseModel):
     records: list[AIHistoryOut]
     total: int
+
+class NegotiationRequest(LetterRequest):
+    pass
+
+class NegotiationResponse(LetterResponse):
+    pass
+
+class HistoryResponse(AIHistoryListOut):
+    pass
+

@@ -18,6 +18,16 @@ class SettlementPredictionResponse(BaseModel):
     risk_category: str
     strategy_text: Optional[str] = None
     ai_generated: bool = False
+    financial_health: Optional[str] = None
+
+
+class SettlementRequest(SettlementPredictionRequest):
+    pass
+
+
+class SettlementResponse(SettlementPredictionResponse):
+    pass
+
 
 
 class SettlementHistoryOut(BaseModel):
