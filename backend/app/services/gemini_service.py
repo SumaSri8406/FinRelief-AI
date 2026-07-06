@@ -72,7 +72,7 @@ class GeminiService:
             "Maintain a professional, empathetic tone. Be specific with numbers."
         )
 
-        response = self.model.generate_content(prompt)
+        response = self.model.generate_content(prompt, request_options={"timeout": 10.0})
         return response.text
 
     def generate_letter(
@@ -106,7 +106,7 @@ class GeminiService:
             "6. Maintain a respectful and professional tone throughout.\n"
         )
 
-        response = self.model.generate_content(prompt)
+        response = self.model.generate_content(prompt, request_options={"timeout": 10.0})
         return response.text
 
     def chat(
@@ -134,7 +134,7 @@ class GeminiService:
         context_lines.append(f"\nUser's question: {message}")
 
         prompt = "\n".join(context_lines)
-        response = self.model.generate_content(prompt)
+        response = self.model.generate_content(prompt, request_options={"timeout": 10.0})
         return response.text
 
 
