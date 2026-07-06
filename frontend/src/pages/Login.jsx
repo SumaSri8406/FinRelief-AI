@@ -31,7 +31,6 @@ export const Login = () => {
     setLoading(true);
     try {
       await login(email, password);
-      navigate('/dashboard');
     } catch (err) {
       console.error(err.message);
     } finally {

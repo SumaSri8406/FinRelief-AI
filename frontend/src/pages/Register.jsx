@@ -44,7 +44,6 @@ export const Register = () => {
     setLoading(true);
     try {
       await register(fullName, email, password);
-      navigate('/dashboard');
     } catch (err) {
       console.error(err.message);
     } finally {

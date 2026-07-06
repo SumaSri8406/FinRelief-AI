@@ -52,7 +52,9 @@ export const AuthProvider = ({ children }) => {
       await login(email, password);
       return res;
     } catch (err) {
-      const errMsg = err.response?.data?.message || err.response?.data?.detail || "Registration failed. Try again.";
+      const errMsg = err.response
+        ? (err.response.data?.message || err.response.data?.detail || "Registration failed. Try again.")
+        : (err.message || "Registration failed. Try again.");
       setError(errMsg);
       throw new Error(errMsg);
     } finally {
