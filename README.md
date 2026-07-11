@@ -223,5 +223,8 @@ This project is licensed under the [MIT License](LICENSE).
 
 ---
 
-## 👥 Contributors
-- **FinRelief AI Team** - [GitHub Repository](https://github.com/)
+## 🎥 Demo Video
+
+Watch the project demo on YouTube:
+
+https://youtu.be/TxeQBBpjjJU?si=8hd4glvBKnPpKZua
