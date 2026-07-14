@@ -10,6 +10,8 @@ Many individuals struggling with outstanding debts face high stress, aggressive 
 2. Draft formal hardship letters to creditors.
 3. Track and evaluate their real debt-to-income and cash flow limits.
 
+---
+
 ## 💡 Solution
 FinRelief AI offers an autonomous, secure, and user-centric platform that puts debt resolution tools directly into the hands of the borrower. By analyzing current income, expenses, and loan structures, the platform:
 - Computes detailed financial health profiles and debt-to-income ratios.
@@ -25,7 +27,7 @@ FinRelief AI offers an autonomous, secure, and user-centric platform that puts d
 - **Financial Health Engine**: Automated calculations of cash flow surplus, EMI ratios, debt ratios, health scores, and stress levels.
 - **Settlement Predictor**: Classifies lender risk, calculates recommended lump-sum settlement targets, and establishes timeline strategies.
 - **AI Letter Generator**: Integrates Google Gemini API to write formal creditor hardship letters with a rule-based fallback model.
-- **AI counselor Chat**: Interactive financial advisor chat directly in the user dashboard.
+- **AI Counselor Chat**: Interactive financial advisor chat directly in the user dashboard.
 - **AI History Logs**: Ordered audit trail of all AI-generated strategies, letters, and counselor replies.
 
 ---
@@ -85,13 +87,17 @@ FinRelief-AI/
 │   ├── index.html
 │   ├── package.json
 │   └── vite.config.js
-├── docs/                      # Technical specification documentation
+├── Documentation/             # Comprehensive technical documentation folder
+│   ├── README.md              # Documentation master index
+│   ├── api_documentation.md   # Complete API reference handbook
+│   ├── database_documentation.md # Database schemas & indices handbook
+│   └── ...                    # Chapters 1 to 10
 ├── screenshots/               # Application UI walk-through screenshots
 ├── .env.example               # Root configuration placeholders
 ├── requirements.txt           # Project dependencies at root
 ├── .gitignore                 # Configured to ignore local databases, build files, and secrets
 ├── LICENSE                    # MIT Open-Source License
-└── README.md                  # Professional documentation file
+└── README.md                  # Root README file
 ```
 
 ---
@@ -114,7 +120,7 @@ FinRelief-AI/
 2. **Create and activate a virtual environment**:
    ```bash
    python -m venv venv
-   # On Windows:
+   # On Windows (PowerShell):
    .\venv\Scripts\activate
    # On macOS/Linux:
    source venv/bin/activate
@@ -140,7 +146,7 @@ FinRelief-AI/
    ```bash
    uvicorn app.main:app --reload
    ```
-   The backend is served at: `http://127.0.0.1:8000`. You can inspect the interactive Swagger API documentation at `http://127.0.0.1:8000/docs`.
+   The backend is served at `http://127.0.0.1:8000`. You can inspect the interactive Swagger API documentation at `http://127.0.0.1:8000/docs`.
 
 ---
 
@@ -189,25 +195,23 @@ FinRelief-AI/
 
 ---
 
-## 🗺️ Entity Relationship (ER) Diagram
-```
-  [User]
-    | (1)
-    |
-    |----(N)----> [Loan]
-    |               | (1)
-    |               |
-    |               +----(1)----> [SettlementRecord]
-    |
-    |----(1)----> [FinancialProfile]
-    |
-    +----(N)----> [AIHistory]
-```
+## 🖼️ Screenshots Section
+
+Visual walkthroughs of the platform are located in the [screenshots/](screenshots/) folder:
+1. [01_login_page.png](file:///c:/Users/HP/OneDrive/Desktop/FinRelief-AI/screenshots/01_login_page.png) - Secure auth landing page.
+2. [02_dashboard_overview.png](file:///c:/Users/HP/OneDrive/Desktop/FinRelief-AI/screenshots/02_dashboard_overview.png) - Recovery scoreboard displaying surplus, DTI, health score, and counseling chat window.
+3. [03_loan_crud.png](file:///c:/Users/HP/OneDrive/Desktop/FinRelief-AI/screenshots/03_loan_crud.png) - Active loan portfolio CRUD manager interface.
+4. [04_settlement_predictions.png](file:///c:/Users/HP/OneDrive/Desktop/FinRelief-AI/screenshots/04_settlement_predictions.png) - Settlement predictor output showcasing suggested lump-sums and lender risk classifications.
+5. [05_ai_negotiation_letter.png](file:///c:/Users/HP/OneDrive/Desktop/FinRelief-AI/screenshots/05_ai_negotiation_letter.png) - Generated hardship letter text editor window.
 
 ---
 
-## 🖼️ Screenshots Section
-*(Screenshots of user dashboard, loan CRUD tables, settlement predictions, and AI counseling history can be added in the [screenshots/](screenshots/) folder)*
+## 📚 Technical Documentation Handbooks
+Refer to the **[Documentation/README.md](file:///c:/Users/HP/OneDrive/Desktop/FinRelief-AI/Documentation/README.md)** index file to browse academic project chapters 1 to 10 and technical handbooks, including:
+* **[User Setup & Feature Manual](file:///c:/Users/HP/OneDrive/Desktop/FinRelief-AI/Documentation/user_manual.md)**
+* **[Developer Setup & Architecture Guide](file:///c:/Users/HP/OneDrive/Desktop/FinRelief-AI/Documentation/developer_guide.md)**
+* **[API Endpoint Specifications](file:///c:/Users/HP/OneDrive/Desktop/FinRelief-AI/Documentation/api_documentation.md)**
+* **[Database Design & Schema](file:///c:/Users/HP/OneDrive/Desktop/FinRelief-AI/Documentation/database_documentation.md)**
 
 ---
 
